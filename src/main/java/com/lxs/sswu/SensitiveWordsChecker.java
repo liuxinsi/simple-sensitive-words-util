@@ -1,8 +1,8 @@
 package com.lxs.sswu;
 
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * 敏感词检测。
@@ -22,7 +22,7 @@ public class SensitiveWordsChecker {
     @SuppressWarnings("unchecked")
     public static Set<String> checkSensitiveWord(String textStr) {
         Set<String> illWords = new HashSet<>();
-        ConcurrentHashMap<String, ConcurrentHashMap> wordsMap = WordsLoader.getWordsMap();
+        Map<String, Map> wordsMap = WordsLoader.getWordsMap();
 
         for (int i = 0; i < textStr.length(); i++) {
             String currWord = String.valueOf(textStr.charAt(i));
@@ -34,7 +34,7 @@ public class SensitiveWordsChecker {
                 int j = i;
 
                 // 获取当前字符的子map
-                ConcurrentHashMap<String, ConcurrentHashMap> subMap = wordsMap.get(currWord);
+                Map<String, Map> subMap = wordsMap.get(currWord);
 
                 // 拼配的数量
                 int matchCount = 1;
@@ -61,6 +61,11 @@ public class SensitiveWordsChecker {
                         strb.append(nextWord);
                         subMap = subMap.get(nextWord);
                         matchCount++;
+                    }
+
+                    // 已然不匹配了
+                    if (wordsCount != matchCount) {
+                        break;
                     }
                 }
 

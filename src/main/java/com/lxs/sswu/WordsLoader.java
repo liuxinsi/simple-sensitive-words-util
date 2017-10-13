@@ -13,8 +13,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.Map;
 
 /**
  * 加载敏感词配置文件。<br/>
@@ -36,7 +37,7 @@ public class WordsLoader {
      * k=敏感词的第一个字符，v=后续字符。
      */
     @SuppressWarnings("unchecked")
-    private static final ConcurrentHashMap<String, ConcurrentHashMap> wordsMap = new ConcurrentHashMap();
+    private static final Map<String, Map> wordsMap = new HashMap<>();
 
     static {
         // 加载
@@ -115,7 +116,7 @@ public class WordsLoader {
             String headWord = null;
 
             // 子内容
-            ConcurrentHashMap<String, ConcurrentHashMap> subWordMap = null;
+            Map<String,Map> subWordMap = null;
             for (char word : wordChars) {
                 String _word = String.valueOf(word);
 
@@ -123,7 +124,7 @@ public class WordsLoader {
                 if (headWord == null) {
                     headWord = _word;
                     if (!wordsMap.containsKey(headWord)) {
-                        wordsMap.put(headWord, new ConcurrentHashMap<>());
+                        wordsMap.put(headWord, new HashMap());
                     }
                     subWordMap = wordsMap.get(headWord);
                     continue;
@@ -131,7 +132,7 @@ public class WordsLoader {
 
                 // 如子内容map不包含当前字符则将当前字符保存到子中
                 if (!subWordMap.containsKey(_word)) {
-                    subWordMap.put(_word, new ConcurrentHashMap());
+                    subWordMap.put(_word, new HashMap());
                     subWordMap = subWordMap.get(_word);
                     continue;
                 }
@@ -155,7 +156,7 @@ public class WordsLoader {
         }
     }
 
-    public static ConcurrentHashMap<String, ConcurrentHashMap> getWordsMap() {
+    public static Map<String,Map> getWordsMap() {
         return wordsMap;
     }
 }
